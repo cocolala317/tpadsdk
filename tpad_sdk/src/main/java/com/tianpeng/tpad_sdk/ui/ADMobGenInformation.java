@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.tianpeng.tpad_sdk.constant.InformationAdType;
 import com.tianpeng.tpad_sdk.data.ADResponseBean;
-import com.tianpeng.tpad_sdk.listener.ADRevertListener;
+import com.tianpeng.tpad_sdk.listener.ADInfomationListener;
+import com.tianpeng.tpad_sdk.sdk.IADMobGenInformation;
 import com.tianpeng.tpad_sdk.sdk.TPengADGenSDK;
 import com.tianpeng.tpad_sdk.ui.activity.AdDetailActivity;
 import com.tianpeng.tpad_sdk.utils.ParamUtil;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * Created by YuHong on 2018/11/29 0029.
  */
-public final class ADMobGenInformation extends ADInfoView<ADRevertListener, ADMobGenInformation> {
+public final class ADMobGenInformation extends ADInfoView<ADInfomationListener, ADMobGenInformation> {
     private List<Integer> infoType;
     private int picHeight;
 
@@ -47,7 +48,7 @@ public final class ADMobGenInformation extends ADInfoView<ADRevertListener, ADMo
         this.picHeight = var1;
     }
 
-    public void setListener(ADRevertListener var1) {
+    public void setListener(ADInfomationListener var1) {
         super.setListener(var1);
     }
 
@@ -55,8 +56,8 @@ public final class ADMobGenInformation extends ADInfoView<ADRevertListener, ADMo
         return this;
     }
 
-    public ADRevertListener getListener() {
-        return (ADRevertListener) super.getListener();
+    public ADInfomationListener getListener() {
+        return (ADInfomationListener) super.getListener();
     }
 
     public final void loadAd() {
@@ -79,7 +80,8 @@ public final class ADMobGenInformation extends ADInfoView<ADRevertListener, ADMo
             @Override
             public void onClick(View view) {
                 getListener().onADClick();
-                context.startActivity(new Intent(context, AdDetailActivity.class).putExtra("goodsUrl",adResponseBean.getAds().get(0).getLanding_url()));
+                context.startActivity(new Intent(context, AdDetailActivity.class)
+                        .putExtra("goodsUrl",adResponseBean.getAds().get(0).getLanding_url()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK ));
             }
         });
         ParamUtil.rl_param(imageView, WhType.match, WhType.match);
@@ -91,11 +93,42 @@ public final class ADMobGenInformation extends ADInfoView<ADRevertListener, ADMo
         }else {
             TPLogger.e("no ads data");
         }
+        getListener().onRecivData(new IADMobGenInformation() {
+            @Override
+            public View getInformationAdView() {
+                return ADMobGenInformation.this;
+            }
+
+//            @Override
+//            public void render() {
+//
+//            }
+//
+//            @Override
+//            public void onExposured() {
+//
+//            }
+
+            @Override
+            public void destroy() {
+                ADMobGenInformation.this.destroy();
+            }
+
+            @Override
+            public boolean isDestroy() {
+                return ADMobGenInformation.this.isDestroy();
+            }
+
+            @Override
+            public int getInformationAdType() {
+                return adResponseBean.getAds().get(0).getInventory_type();
+            }
+        });
     }
 
     public void destroy() {
         super.destroy();
-        this.setListener((ADRevertListener) null);
+        this.setListener((ADInfomationListener) null);
     }
 }
 

@@ -125,8 +125,6 @@ public abstract class ADInfoView<T extends ADRevertListener, E extends IADMobGen
                         Gson gson = new Gson();
                         info = gson.fromJson(msg.obj.toString(),ADResponseBean.class);
                         if(info.getCode()==0) {
-                            if (listener != null)
-                                listener.onADReceiv();
                            initADInfo(context,info);
                         }else {
                             if (listener != null)

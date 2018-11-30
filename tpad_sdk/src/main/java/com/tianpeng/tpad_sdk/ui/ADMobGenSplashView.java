@@ -74,7 +74,8 @@ public class ADMobGenSplashView extends ADInfoView<ADRevertListener, ADMobGenSpl
             @Override
             public void onClick(View view) {
                 getListener().onADClick();
-                context.startActivity(new Intent(context, AdDetailActivity.class).putExtra("goodsUrl",bean.getAds().get(0).getLanding_url()));
+                context.startActivity(new Intent(context, AdDetailActivity.class)
+                        .putExtra("goodsUrl",bean.getAds().get(0).getLanding_url()).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK ));
             }
         });
         textView = new TextView(TPengADGenSDK.getInstance().getAdSdkContext());
